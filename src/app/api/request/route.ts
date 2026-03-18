@@ -73,7 +73,6 @@ export async function POST(req: NextRequest) {
     const { stdout } = await runCommand("openclaw", args, 310000);
 
     // Parse JSON response from openclaw
-    // Response format: { runId, status, result: { payloads: [{ text }], meta: { agentMeta: { sessionId } } } }
     let result;
     try {
       result = JSON.parse(stdout);
@@ -81,33 +80,52 @@ export async function POST(req: NextRequest) {
       result = null;
     }
 
+    // Debug: log full response to console
+    console.log("=== OpenClaw Response ===");
+    console.log(JSON.stringify(result, null, 2));
+
     // Extract reply text from OpenClaw response
     let reply = "";
     let agentSessionId = sessionId;
 
-    if (result?.result?.payloads?.length > 0) {
-      reply = result.result.payloads
-        .map((p: { text?: string }) => p.text || "")
-        .filter(Boolean)
-        .join("\n\n");
-      agentSessionId =
-        result.result?.meta?.agentMeta?.sessionId || sessionId;
-    } else if (result?.reply || result?.message || result?.content) {
-      reply = result.reply || result.message || result.content;
-    } else {
-      reply = stdout.trim();
-    }
-
-    // Return individual payloads so frontend can show each as a separate bubble
-    const payloads: string[] =
+    // Extract payloads text
+    const payloadTexts: string[] =
       result?.result?.payloads
         ?.map((p: { text?: string }) => p.text || "")
         .filter(Boolean) || [];
 
+    if (payloadTexts.length > 0) {
+      // Normal case: payloads have text
+      reply = payloadTexts.join("\n\n");
+      agentSessionId =
+        result?.result?.meta?.agentMeta?.sessionId || sessionId;
+    } else if (result?.result?.meta?.agentMeta?.sessionId) {
+      // Payloads empty but response parsed OK — agent ran but returned no text
+      agentSessionId = result.result.meta.agentMeta.sessionId;
+      reply = "リクエストを受け付けました。確認中です。もう少々お待ちください。";
+      console.log("Warning: OpenClaw payloads empty, agent may have run without text output");
+    } else if (result?.reply || result?.message || result?.content) {
+      // Alternative response format
+      reply = result.reply || result.message || result.content;
+    } else if (result) {
+      // Parsed JSON but no recognizable text field — don't show raw JSON
+      reply = "リクエストを受け付けました。処理を進めています。";
+      console.log("Warning: OpenClaw response has no text fields:", Object.keys(result));
+    } else {
+      // Could not parse as JSON — use raw output only if it looks like text
+      const raw = stdout.trim();
+      if (raw.startsWith("{") || raw.startsWith("[")) {
+        reply = "回答の取得中に問題が起きました。もう一度お試しください。";
+        console.log("Warning: Raw stdout looks like JSON but failed to extract text");
+      } else {
+        reply = raw;
+      }
+    }
+
     return NextResponse.json({
       success: true,
       reply,
-      payloads: payloads.length > 0 ? payloads : [reply],
+      payloads: payloadTexts.length > 0 ? payloadTexts : [reply],
       sessionId: agentSessionId,
     });
   } catch (error: unknown) {
