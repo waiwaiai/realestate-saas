@@ -6,6 +6,7 @@ import {
   Plus,
   FileText,
   BarChart3,
+  Calculator,
   Mail,
   Calendar,
   Lock,
@@ -33,6 +34,15 @@ const installedModules = [
     status: "active" as const,
     installedAt: "2026-03-01",
     usageCount: 12,
+  },
+  {
+    id: "yield-simulator",
+    name: "利回りシミュレータ",
+    description: "表面利回り・実質利回りを即座に試算。経費内訳も可視化。",
+    icon: Calculator,
+    status: "active" as const,
+    installedAt: "2026-03-18",
+    usageCount: 0,
   },
 ];
 
