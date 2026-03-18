@@ -8,10 +8,10 @@ import {
   Sparkles,
   ArrowRight,
   ArrowLeft,
-  Loader2,
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
+import BuildingAnimation from "@/components/BuildingAnimation";
 
 // ── Types ──────────────────────────────────────────────
 interface Message {
@@ -433,15 +433,9 @@ export default function RequestPage() {
             ))}
 
             {isLoading && (
-              <div className="flex gap-3 animate-fade-in">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 bg-blue-100 text-blue-600">
-                  <Bot className="h-3.5 w-3.5" />
-                </div>
-                <div className="bg-white border border-gray-200 rounded-2xl px-4 py-3 flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 text-blue-500 animate-spin" />
-                  <span className="text-sm text-gray-500">
-                    AIエージェントが処理中...
-                  </span>
+              <div className="animate-fade-in">
+                <div className="bg-white border border-gray-200 rounded-2xl px-6 py-4">
+                  <BuildingAnimation />
                 </div>
               </div>
             )}
