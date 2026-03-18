@@ -98,9 +98,16 @@ export async function POST(req: NextRequest) {
       reply = stdout.trim();
     }
 
+    // Return individual payloads so frontend can show each as a separate bubble
+    const payloads: string[] =
+      result?.result?.payloads
+        ?.map((p: { text?: string }) => p.text || "")
+        .filter(Boolean) || [];
+
     return NextResponse.json({
       success: true,
       reply,
+      payloads: payloads.length > 0 ? payloads : [reply],
       sessionId: agentSessionId,
     });
   } catch (error: unknown) {

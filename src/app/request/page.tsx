@@ -96,10 +96,14 @@ export default function RequestPage() {
 
         if (data.sessionId) setSessionId(data.sessionId);
 
-        setMessages((prev) => [
-          ...prev,
-          { role: "bot", content: data.reply, timestamp: now() },
-        ]);
+        // Show each payload as a separate chat bubble
+        const payloads: string[] = data.payloads || [data.reply];
+        const botMessages: Message[] = payloads.map((text: string) => ({
+          role: "bot" as const,
+          content: text,
+          timestamp: now(),
+        }));
+        setMessages((prev) => [...prev, ...botMessages]);
       } catch (err: unknown) {
         const e = err as Error;
         setError(e.message);
@@ -107,7 +111,7 @@ export default function RequestPage() {
           ...prev,
           {
             role: "system",
-            content: `エージェントとの通信に失敗しました: ${e.message}`,
+            content: `うまくつながりませんでした。しばらくしてからもう一度お試しください。（${e.message}）`,
             timestamp: now(),
           },
         ]);
@@ -184,7 +188,7 @@ export default function RequestPage() {
           <p className="text-sm text-gray-500">
             {step === "form"
               ? "まず、リクエスト内容を入力してください"
-              : "AIエージェントと要件を詰めています"}
+              : "AIアシスタントとやりとりしています"}
           </p>
         </div>
       </div>
@@ -224,7 +228,7 @@ export default function RequestPage() {
           >
             2
           </span>
-          AIと要件確認 &amp; 開発
+          AIとやりとり &amp; 作成
         </div>
       </div>
 
@@ -341,14 +345,14 @@ export default function RequestPage() {
           <div className="flex items-center justify-between pt-4 border-t border-gray-100">
             <p className="text-xs text-gray-400">
               <Sparkles className="inline h-3 w-3 mr-1" />
-              送信後、AIエージェントが要件を確認し、実装まで行います
+              送信後、AIアシスタントが内容を確認し、機能を作成します
             </p>
             <button
               onClick={handleFormSubmit}
               disabled={!isFormValid}
               className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              AIエージェントに送信
+              AIアシスタントに送信
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>
@@ -363,10 +367,9 @@ export default function RequestPage() {
                 <Bot className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-sm font-bold">OpenClaw AIエージェント</p>
+                <p className="text-sm font-bold">イエサーチくん</p>
                 <p className="text-[11px] text-blue-100">
-                  {isLoading ? "考え中..." : "接続中"}
-                  {sessionId && ` · Session: ${sessionId.slice(0, 8)}...`}
+                  {isLoading ? "回答を考えています..." : "対応できます"}
                 </p>
               </div>
             </div>
@@ -472,10 +475,10 @@ export default function RequestPage() {
             </div>
             <div className="flex items-center justify-between mt-2">
               <p className="text-[11px] text-gray-400">
-                OpenClaw AIエージェントが実際にコードを書いて機能を実装します
+                AIアシスタントがあなたの要望に合わせて機能を作ります
               </p>
               <p className="text-[11px] text-gray-400">
-                今月の残り: 7/10回
+                今月あと7回利用できます
               </p>
             </div>
           </div>
