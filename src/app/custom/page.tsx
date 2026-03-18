@@ -147,9 +147,12 @@ export default function CustomPage() {
                   <span className="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-medium">
                     稼働中
                   </span>
-                  <button className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
+                  <Link
+                    href={`/custom/${mod.id}`}
+                    className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                  >
                     開く <ExternalLink className="h-3 w-3" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
