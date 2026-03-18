@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Sidebar from "@/components/Sidebar";
+import AppHeader from "@/components/AppHeader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "IeSearch - 理想の住まいを、もっと簡単に",
+  title: "IeSearch - 不動産業務管理SaaS",
   description:
-    "AI搭載の不動産検索プラットフォーム。物件検索から内見予約まで、あなたの住まい探しをトータルサポート。顧客自身が育てるSaaS。",
+    "物件管理・顧客管理・契約管理を一元化。AIで進化する不動産業務プラットフォーム。",
 };
 
 export default function RootLayout({
@@ -28,11 +28,15 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
       >
-        <Header />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+        <div className="flex h-screen overflow-hidden">
+          <Sidebar />
+          <div className="flex-1 ml-56 flex flex-col overflow-hidden">
+            <AppHeader />
+            <main className="flex-1 overflow-y-auto">{children}</main>
+          </div>
+        </div>
       </body>
     </html>
   );

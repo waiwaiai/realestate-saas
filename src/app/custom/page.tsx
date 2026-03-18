@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
-  Puzzle,
   Plus,
   FileText,
   BarChart3,
@@ -11,6 +11,8 @@ import {
   Lock,
   Code,
   ExternalLink,
+  Bot,
+  ArrowRight,
 } from "lucide-react";
 
 const installedModules = [
@@ -21,6 +23,7 @@ const installedModules = [
     icon: FileText,
     status: "active" as const,
     installedAt: "2026-02-15",
+    usageCount: 24,
   },
   {
     id: "analytics",
@@ -29,6 +32,7 @@ const installedModules = [
     icon: BarChart3,
     status: "active" as const,
     installedAt: "2026-03-01",
+    usageCount: 12,
   },
 ];
 
@@ -57,55 +61,45 @@ const availableModules = [
 ];
 
 export default function CustomPage() {
-  const [activeTab, setActiveTab] = useState<"installed" | "marketplace">(
-    "installed"
-  );
+  const [activeTab, setActiveTab] = useState<"installed" | "marketplace">("installed");
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-            <Puzzle className="h-5 w-5 text-purple-600" />
-          </div>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              カスタムページ
-            </h1>
-            <p className="text-gray-500 text-sm">
-              あなた専用の機能エリア。自由に追加・カスタマイズできます。
-            </p>
-          </div>
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-gray-900">カスタム機能</h1>
+          <p className="text-sm text-gray-500">あなた専用の拡張機能エリア</p>
         </div>
+        <Link
+          href="/request"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <Bot className="h-4 w-4" />
+          新しい機能をリクエスト
+        </Link>
       </div>
 
       {/* Info Banner */}
-      <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6 mb-8 border border-purple-100">
-        <div className="flex items-start gap-4">
-          <Code className="h-6 w-6 text-purple-600 mt-0.5 shrink-0" />
+      <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4 border border-purple-100">
+        <div className="flex items-start gap-3">
+          <Code className="h-5 w-5 text-purple-600 mt-0.5 shrink-0" />
           <div>
-            <h3 className="font-bold text-gray-900 mb-1">
-              このエリアはあなた専用です
-            </h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              コア機能（物件管理・検索・ダッシュボード）はそのまま。
-              このカスタムエリアでは独自機能の追加・編集が自由にできます。
-              WebViewで完全分離されているため、本体システムに影響はありません。
+            <p className="text-sm text-gray-700">
+              コア機能（物件管理・顧客管理・契約管理）はそのまま。
+              このエリアでは独自機能の追加・編集が自由にできます。
             </p>
-            <div className="flex items-center gap-4 mt-3">
-              <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+            <div className="flex items-center gap-4 mt-2">
+              <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">
                 今月の残り開発回数: 7/10回
               </span>
-              <span className="text-xs text-gray-500">
-                プロフェッショナルプラン
-              </span>
+              <span className="text-xs text-gray-500">プロフェッショナルプラン</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 rounded-lg p-1 mb-8 w-fit">
+      <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
         <button
           onClick={() => setActiveTab("installed")}
           className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
@@ -124,72 +118,68 @@ export default function CustomPage() {
               : "text-gray-500 hover:text-gray-700"
           }`}
         >
-          追加できる機能
+          テンプレート
         </button>
       </div>
 
       {activeTab === "installed" ? (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {installedModules.map((mod) => (
             <div
               key={mod.id}
-              className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow"
+              className="bg-white rounded-lg border border-gray-200 p-5 hover:shadow-sm transition-shadow"
             >
               <div className="flex items-start justify-between">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
-                    <mod.icon className="h-6 w-6 text-blue-600" />
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                    <mod.icon className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 mb-1">
-                      {mod.name}
-                    </h3>
-                    <p className="text-sm text-gray-500">{mod.description}</p>
-                    <p className="text-xs text-gray-400 mt-2">
-                      導入日: {mod.installedAt}
-                    </p>
+                    <h3 className="text-sm font-bold text-gray-900">{mod.name}</h3>
+                    <p className="text-xs text-gray-500 mt-0.5">{mod.description}</p>
+                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
+                      <span>導入日: {mod.installedAt}</span>
+                      <span>利用回数: {mod.usageCount}回</span>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-medium">
                     稼働中
                   </span>
-                  <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
-                    開く <ExternalLink className="h-3.5 w-3.5" />
+                  <button className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
+                    開く <ExternalLink className="h-3 w-3" />
                   </button>
                 </div>
               </div>
             </div>
           ))}
 
-          {/* Custom development CTA */}
-          <button className="w-full bg-white rounded-xl border-2 border-dashed border-gray-300 p-8 hover:border-blue-400 hover:bg-blue-50/30 transition-colors group">
-            <div className="flex flex-col items-center gap-2 text-gray-400 group-hover:text-blue-500">
-              <Plus className="h-8 w-8" />
-              <span className="font-medium">
-                新しい機能をAIにリクエストする
-              </span>
-              <span className="text-xs">
-                「こんな機能がほしい」を伝えるだけでOK
-              </span>
-            </div>
-          </button>
+          <Link
+            href="/request"
+            className="block w-full bg-white rounded-lg border-2 border-dashed border-gray-300 p-6 hover:border-blue-400 hover:bg-blue-50/30 transition-colors group text-center"
+          >
+            <Plus className="h-6 w-6 text-gray-400 group-hover:text-blue-500 mx-auto mb-2" />
+            <p className="text-sm font-medium text-gray-500 group-hover:text-blue-600">
+              AIに新しい機能を作ってもらう
+            </p>
+          </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {availableModules.map((mod) => (
             <div
               key={mod.id}
-              className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow"
+              className="bg-white rounded-lg border border-gray-200 p-5 hover:shadow-sm transition-shadow"
             >
-              <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center mb-4">
-                <mod.icon className="h-6 w-6 text-gray-600" />
+              <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center mb-3">
+                <mod.icon className="h-5 w-5 text-gray-600" />
               </div>
-              <h3 className="font-bold text-gray-900 mb-1">{mod.name}</h3>
-              <p className="text-sm text-gray-500 mb-4">{mod.description}</p>
+              <h3 className="text-sm font-bold text-gray-900 mb-1">{mod.name}</h3>
+              <p className="text-xs text-gray-500 mb-3">{mod.description}</p>
               <div className="flex items-center justify-between">
                 <span
-                  className={`text-xs px-2 py-1 rounded-full font-medium ${
+                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                     mod.difficulty === "簡単"
                       ? "bg-green-100 text-green-700"
                       : mod.difficulty === "中程度"
@@ -199,9 +189,12 @@ export default function CustomPage() {
                 >
                   {mod.difficulty}
                 </span>
-                <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                  導入する
-                </button>
+                <Link
+                  href="/request"
+                  className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                >
+                  導入する <ArrowRight className="h-3 w-3" />
+                </Link>
               </div>
             </div>
           ))}
