@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     // Build openclaw agent args (no shell escaping needed with spawn)
     const args = [
       "agent",
-      "--agent", "main",
+      "--agent", "iesearch",
       "--message", message,
       "--json",
       "--thinking", "medium",
